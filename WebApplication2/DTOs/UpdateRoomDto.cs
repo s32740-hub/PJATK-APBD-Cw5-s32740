@@ -14,5 +14,5 @@ public class UpdateRoomDto
     public int Capacity { get; set; }
 
     public bool HasProjector { get; set; } = false;
-    [Required] public bool IsActive { get; set; } = false;
+    public bool IsActive { get; set; } = false;
 }

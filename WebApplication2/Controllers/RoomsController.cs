@@ -52,7 +52,7 @@ public class RoomsController : ControllerBase
     }
     
     [HttpGet]
-    public IActionResult GetByFilter(int? minCapacity, bool? hasProjector, bool activeOnly=false)
+    public IActionResult Get(int? minCapacity, bool? hasProjector, bool activeOnly=false)
     {
         var query = _rooms.AsEnumerable();
         if (minCapacity is not null)
@@ -70,7 +70,19 @@ public class RoomsController : ControllerBase
             query = query.Where(x => x.IsActive == true);
         }
 
-        return Ok(query.ToList());
+        return Ok(
+            query.Select(
+                r => new RoomDto()
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    BuildingCode = r.BuildingCode,
+                    Floor = r.Floor,
+                    Capacity = r.Capacity,
+                    IsActive = r.IsActive,
+                    HasProjector = r.HasProjector,
+                }
+                ));
     }
 
     [HttpDelete("{id:int}")]
@@ -99,7 +111,7 @@ public class RoomsController : ControllerBase
     {
         var room = new Room
         {
-            Id = _rooms.Max(e => e.Id) + 1,
+            Id = (_rooms.Any()?_rooms.Max(e => e.Id):0) + 1,
             Name = roomDto.Name,
             BuildingCode = roomDto.BuildingCode,
             Floor = roomDto.Floor,

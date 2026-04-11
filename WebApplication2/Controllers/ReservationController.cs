@@ -32,7 +32,7 @@ public class ReservationController : ControllerBase
     }
     
     [HttpGet]
-    public IActionResult GetByFilter(DateTime? date, string? status, int? roomId)
+    public IActionResult Get(DateTime? date, string? status, int? roomId)
     {
         var query = _reservations.AsEnumerable();
         if (date is not null)
@@ -95,9 +95,12 @@ public class ReservationController : ControllerBase
         );
         if (hasConflict)
             return Conflict("Rezerwacja koliduje z istniejącą rezerwacją tej sali");
+        
+        if (reservationDto.StartTime >= reservationDto.EndTime)
+            return BadRequest("StartTime must be before EndTime");
         var reservation = new Reservation()
         {
-            Id = _reservations.Max(e => e.Id) + 1,
+            Id = (_reservations.Any()?_reservations.Max(e => e.Id):0) + 1,
             RoomId = reservationDto.RoomId,
             Topic =  reservationDto.Topic,
             OrganizerName = reservationDto.OrganizerName,

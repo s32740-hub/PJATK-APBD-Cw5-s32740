@@ -58,7 +58,7 @@ public class DataStore
         new Reservation()
         {
             Id = 6,
-            RoomId = 4,
+            RoomId = 2,
             OrganizerName = "Zespół IT",
             Topic = "Nieformalne spotkanie integracyjne",
             StartTime = new DateTime(2026, 4, 16, 15, 0, 0),
